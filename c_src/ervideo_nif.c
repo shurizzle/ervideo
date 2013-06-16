@@ -644,6 +644,47 @@ video_close(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[]) {
 #define ERROR(x) _ERROR(x)
 
 ERL_NIF_TERM
+video_capture(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[]) {
+  ERL_NIF_TERM *tuple;
+  int arity;
+  video_object_t *obj;
+
+  if (!IS_ERVIDEO(env, argv[0], tuple, arity, obj)) {
+    return enif_make_badarg(env);
+  }
+
+  if (!obj->enabled) {
+    switch (capture_on(obj)) {
+      case -1:
+        return ERROR(vidioc_qbuf);
+      case -2:
+        return ERROR(vidioc_streamon);
+    }
+  }
+
+  return enif_make_atom(env, "ok");
+}
+
+ERL_NIF_TERM
+video_uncapture(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[]) {
+  ERL_NIF_TERM *tuple;
+  int arity;
+  video_object_t *obj;
+
+  if (!IS_ERVIDEO(env, argv[0], tuple, arity, obj)) {
+    return enif_make_badarg(env);
+  }
+
+  if (obj->enabled) {
+    if (capture_off(obj) != 0) {
+      return ERROR(vidioc_streamoff);
+    }
+  }
+
+  return enif_make_atom(env, "ok");
+}
+
+ERL_NIF_TERM
 video_read(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[]) {
   ERL_NIF_TERM *tuple;
   int arity, res;
@@ -786,6 +827,8 @@ ervideo_load(ErlNifEnv *env, void **priv_data, ERL_NIF_TERM load_info) {
 ErlNifFunc erv_funcs[] = {
   { "open", 4, video_open },
   { "close", 1, video_close },
+  { "capture", 1, video_capture },
+  { "uncapture", 1, video_uncapture },
   { "read", 3, video_read }
 };
 

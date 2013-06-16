@@ -1,6 +1,6 @@
 -module(ervideo).
 
--export([open/3, open/4, read/1, read/2, read/3, close/1]).
+-export([open/3, open/4, capture/1, read/1, read/2, read/3, uncapture/1, close/1]).
 -on_load(init/0).
 
 init() ->
@@ -12,6 +12,8 @@ open(Path, Width, Height) ->
 open(_, _, _, _) ->
   erlang:error(nif_not_loaded).
 
+capture(_) -> erlang:error(nif_not_loaded).
+
 read(Res) -> read(yuv, infinity, Res).
 read(Fmt, Res) -> read(Fmt, infinity, Res).
 
@@ -20,6 +22,8 @@ read(_, _, _) ->
 
 close(_) ->
   erlang:error(nif_not_loaded).
+
+uncapture(_) -> erlang:error(nif_not_loaded).
 
 get_priv_dir(Name) ->
   case code:priv_dir(?MODULE) of
