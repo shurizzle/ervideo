@@ -202,6 +202,7 @@ capture_on(video_object_t *obj) {
         buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
         buf.memory = V4L2_MEMORY_MMAP;
         buf.index = i;
+        buf.length = obj->buffers[i].length;
 
         if (xioctl(obj->fd, VIDIOC_QBUF, &buf) == -1) {
           return -1;
@@ -528,9 +529,9 @@ video_open(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[]) {
       for (n_buffers = 0; n_buffers < req.count; ++n_buffers) {
         struct v4l2_buffer buf; CLEAR(buf);
 
+        buf.index = n_buffers;
         buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
         buf.memory = V4L2_MEMORY_MMAP;
-        buf.index = n_buffers;
 
         if (xioctl(fd, VIDIOC_QUERYBUF, &buf) == -1) {
           free_buffers(buffers, n_buffers, method);
