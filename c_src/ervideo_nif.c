@@ -613,7 +613,7 @@ video_open(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[]) {
       enif_make_resource(env, obj));
   enif_release_resource(obj);
 
-  return r;
+  return enif_make_tuple2(env, enif_make_atom(env, "ok"), r);
 }
 
 #undef ERROR

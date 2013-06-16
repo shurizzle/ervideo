@@ -2,7 +2,7 @@
 %%! -pa ebin
 
 main(_) ->
-  X = ervideo:open(0, 640, 480, mmap),
+  {ok, X} = ervideo:open(0, 640, 480, mmap),
   X:capture(),
   {png, _} = X:read(png),
   X:uncapture(),
