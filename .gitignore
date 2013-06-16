@@ -1,0 +1,5 @@
+.*.swp
+*.o
+*.app
+*.beam
+/priv
