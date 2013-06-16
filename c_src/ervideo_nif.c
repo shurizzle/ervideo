@@ -791,16 +791,18 @@ video_read(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv[]) {
     ERL_NIF_TERM r;
     memcpy(enif_make_new_binary(env, len, &r), frame, len);
 
-    return enif_make_tuple2(env, enif_make_atom(env, "png"), r);
+    return enif_make_tuple2(env, enif_make_atom(env, "ok"),
+        enif_make_tuple2(env, enif_make_atom(env, "png"), r));
   }
   else if (!strcmp(format, "yuyv")) {
     ERL_NIF_TERM r;
     memcpy(enif_make_new_binary(env, len, &r), frame, len);
 
-    return enif_make_tuple4(env, enif_make_atom(env, "yuv"),
-        r,
-        enif_make_uint(env, obj->width),
-        enif_make_uint(env, obj->height));
+    return enif_make_tuple2(env, enif_make_atom(env, "ok"),
+        enif_make_tuple4(env, enif_make_atom(env, "yuv"),
+          r,
+          enif_make_uint(env, obj->width),
+          enif_make_uint(env, obj->height)));
   }
 
   return ERROR(format);
